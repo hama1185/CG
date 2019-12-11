@@ -3,10 +3,6 @@ from OpenGL.GLU import *
 from OpenGL.GLUT import *
 import sys
 import math
-from OpenGL.raw.GL.VERSION.GL_1_0 import glMaterialfv
-
-
-
 
 class Face:
     def __init__(self, i_vertex, normal):
@@ -127,7 +123,7 @@ def display():
     glTranslated(0.0, ARM_HALF_LENGTH, 0.0)
     myBox(VERTEX_ARM)
 
-# joint
+# 1st joint
     glTranslated(0.0, ARM_HALF_LENGTH, 0.0)
     glPushMatrix()
     glRotated(90.0, 1.0, 0.0, 0.0)
@@ -136,6 +132,18 @@ def display():
 
 # 2nd arm
     glRotated(gy, 0.0, 0.0, 1.0)
+    glTranslated(0.0, ARM_HALF_LENGTH, 0.0)
+    myBox(VERTEX_ARM)
+
+# 2nd joint
+    glTranslated(0.0, ARM_HALF_LENGTH, 0.0)
+    glPushMatrix()
+    glRotated(90.0, 0.0, 0.0, 1.0)
+    myCylinder(0.4, 0.4, 16)
+    glPopMatrix()
+
+# 3nd arm
+    glRotated(gy, 1.0, 0.0, 0.0)
     glTranslated(0.0, ARM_HALF_LENGTH, 0.0)
     myBox(VERTEX_ARM)
 
