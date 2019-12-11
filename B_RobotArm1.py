@@ -114,7 +114,6 @@ def display():
     myGround(GROUND_LEVEL)
     glRotated(gx, 0.0, 1.0, 0.0)
 
-
 # base
     glTranslated(0.0, GROUND_LEVEL+BASE_HALF_THICKNESS, 0.0)
     myCylinder(1.0, BASE_HALF_THICKNESS, 16)
@@ -154,8 +153,6 @@ def display():
 
     glFlush()
 
-#display.r = 0
-
 def resize(w, h):
     glViewport(0, 0, w, h)
     glMatrixMode(GL_PROJECTION)
@@ -185,7 +182,6 @@ def motion(x, y):
     gy = y - dy
     
     glutPostRedisplay()
-    
 
 
 VERTEX_ARM = vertex_box(ARM_SIZE, ARM_HALF_LENGTH, ARM_SIZE)
