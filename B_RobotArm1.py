@@ -23,13 +23,16 @@ BLUE = [0.2, 0.2, 0.8, 1.0]
 YELLOW = [0.8, 0.8, 0.2, 1.0]
 DIFFUSE_GROUND = [[0.6, 0.6, 0.6, 1.0], [0.3, 0.3, 0.3, 1.0]]
 RANGE_GROUND = range(-5, 5)
-
-dx = 0
-dy = 0
-dz = 0
+# それぞれgがglobal pはpositionのp dはdelta
 gx = 0
 gy = 0
 gz = 0
+px = 0
+py = 0
+pz = 0
+dx = 0
+dy = 0
+dz = 0
 
 GROUND_LEVEL = -2.0
 BASE_HALF_THICKNESS = 0.2
@@ -93,16 +96,16 @@ def myCylinder(radius, height, sides):
     glEnd()
 
 def controlFirstArm(x ,y ,z):
-    global gy
-    return gy
+    global dy
+    return dy
 
 def controlSecondArm(x ,y ,z):
-    global gz
-    return gz
+    global dz
+    return dz
 
 def controlThirdArm(x ,y ,z):
-    global gx
-    return gx
+    global dx
+    return dx
 
 def myGround(height):
     glBegin(GL_QUADS)
@@ -118,6 +121,7 @@ def myGround(height):
     glEnd()
 
 def display():
+    global gx,gy,gz
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT )
     glLoadIdentity()
     glLightfv(GL_LIGHT0, GL_POSITION, LIGHTPOS)
@@ -125,7 +129,7 @@ def display():
     glTranslated(0.0, 0.0, -10.0)
 
     myGround(GROUND_LEVEL)
-    glRotated(gx, 0.0, 1.0, 0.0)
+    glRotated(controlFirstArm(gx, gy, gz), 0.0, 1.0, 0.0)
 
 # base
     glTranslated(0.0, GROUND_LEVEL+BASE_HALF_THICKNESS, 0.0)
@@ -143,7 +147,7 @@ def display():
     glPopMatrix()
 
 # 2nd arm
-    glRotated(gy, 0.0, 0.0, 1.0)
+    glRotated(controlSecondArm(gx ,gy ,gz), 0.0, 0.0, 1.0)
     glTranslated(0.0, ARM_HALF_LENGTH, 0.0)
     myBox(VERTEX_ARM)
 
@@ -155,7 +159,7 @@ def display():
     glPopMatrix()
 
 # 3nd arm
-    glRotated(gy, 1.0, 0.0, 0.0)
+    glRotated(controlThirdArm(gx, gy, gz), 1.0, 0.0, 0.0)
     glTranslated(0.0, ARM_HALF_LENGTH, 0.0)
     myBox(VERTEX_ARM)
 
@@ -183,28 +187,49 @@ def init():
 
 
 def mouse(button, state, x, y):
-    global dx,dy
+    global pz,py
     if button == GLUT_LEFT_BUTTON:
         if state == GLUT_DOWN:
-            dx = x
-            dy = y
+            py = x
+            pz = y
 
 def motion(x, y):
-    global gx,gy
-    gx = x - dx
-    gy = y - dy
+    global dz,dy,pz,py
+    dy = x - py
+    dz = y - pz
     
     glutPostRedisplay()
 
+def mouseWheel(button, dir, x, y):
+    global dx
+    if dir > 0:
+        dx += 2
+    elif dir < 0:
+        dx -= 2
+    
+    glutPostRedisplay()
+
+def key(key, x, y):
+    global gx,gy,gz
+    key = key.decode("utf-8")
+    if key == " ":
+        gx = input("x :\n")
+        gy = input("y :\n")
+        gz = input("z :\n")
+
+gx = input("x :\n")
+gy = input("y :\n")
+gz = input("z :\n")
 
 VERTEX_ARM = vertex_box(ARM_SIZE, ARM_HALF_LENGTH, ARM_SIZE)
-
 glutInit(sys.argv)
 glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH)
 glutCreateWindow(b"GLUT robot arm")
 glutDisplayFunc(display)
 glutMouseFunc(mouse)
 glutMotionFunc(motion)
+glutMouseWheelFunc(mouseWheel)
+glutKeyboardUpFunc(key)
 glutReshapeFunc(resize)
 init()
 glutMainLoop()
