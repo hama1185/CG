@@ -24,15 +24,15 @@ YELLOW = [0.8, 0.8, 0.2, 1.0]
 DIFFUSE_GROUND = [[0.6, 0.6, 0.6, 1.0], [0.3, 0.3, 0.3, 1.0]]
 RANGE_GROUND = range(-5, 5)
 # それぞれgがglobal pはpositionのp dはdelta
-gx = 0
-gy = 0
-gz = 0
-px = 0
-py = 0
-pz = 0
-dx = 0
-dy = 0
-dz = 0
+gx = 0.0
+gy = 0.0
+gz = 0.0
+px = 0.0
+py = 0.0
+pz = 0.0
+dx = 0.0
+dy = 0.0
+dz = 0.0
 
 GROUND_LEVEL = -2.0
 BASE_HALF_THICKNESS = 0.2
@@ -214,12 +214,24 @@ def key(key, x, y):
     key = key.decode("utf-8")
     if key == " ":
         gx = input("x :\n")
+    if type(gx) != float:
+        gx = input("x :\n")
+    gy = input("y :\n")
+    if type(gy) != float:
         gy = input("y :\n")
+    gz = input("z :\n")
+    if type(gz) != float:
         gz = input("z :\n")
-
+# 後でwhile文の追加をする
 gx = input("x :\n")
+if type(gx) != float:
+    gx = input("x :\n")
 gy = input("y :\n")
+if type(gy) != float:
+    gy = input("y :\n")
 gz = input("z :\n")
+if type(gz) != float:
+    gz = input("z :\n")
 
 VERTEX_ARM = vertex_box(ARM_SIZE, ARM_HALF_LENGTH, ARM_SIZE)
 glutInit(sys.argv)
