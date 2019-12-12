@@ -27,8 +27,10 @@ RANGE_GROUND = range(-5, 5)
 
 dx = 0
 dy = 0
+dz = 0
 gx = 0
 gy = 0
+gz = 0
 
 GROUND_LEVEL = -2.0
 BASE_HALF_THICKNESS = 0.2
@@ -90,6 +92,18 @@ def myCylinder(radius, height, sides):
         glVertex3d(x, height, z)
         glVertex3d(x, -height, z)
     glEnd()
+
+def controlFirstArm(x ,y ,z):
+    global gy
+    return gy
+
+def controlSecondArm(x ,y ,z):
+    global gz
+    return gz
+
+def controlThirdArm(x ,y ,z):
+    global gx
+    return gx
 
 def myGround(height):
     glBegin(GL_QUADS)
