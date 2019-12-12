@@ -9,7 +9,6 @@ class Face:
         self.i_vertex = i_vertex
         self.normal = normal
 
-
 FACE = [
     Face([3, 2, 1, 0], [ 0.0,  0.0, -1.0]),
     Face([2, 6, 5, 1], [ 1.0,  0.0,  0.0]),
