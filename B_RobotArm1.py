@@ -213,26 +213,30 @@ def key(key, x, y):
     global gx,gy,gz
     key = key.decode("utf-8")
     if key == " ":
-        gx = input("x :\n")
-    if type(gx) != float:
-        gx = input("x :\n")
-    gy = input("y :\n")
-    if type(gy) != float:
-        gy = input("y :\n")
-    gz = input("z :\n")
-    if type(gz) != float:
-        gz = input("z :\n")
-# 後でwhile文の追加をする
-gx = input("x :\n")
-if type(gx) != float:
-    gx = input("x :\n")
-gy = input("y :\n")
-if type(gy) != float:
-    gy = input("y :\n")
-gz = input("z :\n")
-if type(gz) != float:
-    gz = input("z :\n")
+        inputData()
 
+def inputData():
+    global gx,gy,gz
+    gx = input("x :\n")
+    while type(gx) != (float or int):
+        try:
+            gx = float(gx)
+        except ValueError:
+            gx = input("x :\n")
+    gy = input("y :\n")
+    while type(gy) != (float or int):
+        try:
+            gy = float(gy)
+        except ValueError:
+            gy = input("y :\n")
+    gz = input("z :\n")
+    while type(gz) != (float or int):
+        try:
+            gz = float(gz)
+        except ValueError:
+            gz = input("z :\n")
+
+inputData()
 VERTEX_ARM = vertex_box(ARM_SIZE, ARM_HALF_LENGTH, ARM_SIZE)
 glutInit(sys.argv)
 glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH)
