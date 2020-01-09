@@ -8,17 +8,26 @@ class controlArm():
     def __init__(self, l, j):
         self.l = l
         self.j = j
-
+    #mathmatica`s atan is (x,y),but python`s atan is (y,x)
     def controlFirstArm(self,x ,y ,z):
-        return math.degrees(math.atan2(z,-x))
+        global dy,spacefirstFlag
+        if spacefirstFlag:
+            spacefirstFlag = False
+            return math.degrees(math.atan2(z,-x))            
+        else:
+            return dy
 
     def controlSecondArm(self, x ,y ,z):
-        #mathmatica`s atan is (x,y),but python`s atan is (y,x)
-        try:
-            return math.degrees(math.acos( (y - self.l) / self.j ))
-        except ValueError:
-            print("Not Reach")
-            return 0
+        global dz,spacesecondFlag
+        if spacesecondFlag:
+            try:
+                spacesecondFlag = False
+                return math.degrees(math.acos( (y - self.l) / self.j ))
+            except ValueError:
+                print("Not Reach")
+                return 0
+        else:
+            return dz        
 
 class Face:
     def __init__(self, i_vertex, normal):
@@ -49,6 +58,8 @@ pz = 0.0
 dx = 0.0
 dy = 0.0
 dz = 0.0
+spacefirstFlag = False
+spacesecondFlag = False
 
 GROUND_LEVEL = -2.0
 BASE_HALF_THICKNESS = 0.2
@@ -222,7 +233,9 @@ def key(key, x, y):
         inputData()
 
 def inputData():
-    global gx,gy,gz
+    global gx,gy,gz,spacefirstFlag,spacesecondFlag
+    spacefirstFlag = True
+    spacesecondFlag = True 
     gx = input("x :\n")
     while type(gx) != (float or int):
         try:
