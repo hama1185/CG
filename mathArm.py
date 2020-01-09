@@ -30,7 +30,7 @@ class controlArm():
         x4 = x ** 4
         y4 = y ** 4
         z4 = z ** 4
-        argumentX = -((2 * (self.j * self.l - self.j * y)) / (self.j2 - self.k2 + self.l2 + x2- 2 * self.l * y + y2 + z2))
+        argumentX = -((2 * (self.j * self.l-self.j * y))/(self.j2-self.k2+self.l2+x2-2 * self.l * y+y2+z2))
         argumentY = -(((self.j4 - 2 * self.j2 * self.k2 + self.k4 - 2  * self.j2 *  self.l2 - 2 * self.k2 * self.l2 + self.l4 + 2 * self.j2 * x2 - 2 * self.k2 * x2 + 2 * self.l2 * x2 + x4 + 4 * self.j2 * self.l * y + 4 * self.k2 * self.l * y - 4 * self.l3 * y - 4 * self.l * x2 * y - 2 * self.j2 * y2 - 2 * self.k2 * y2 + 6 * self.l2 * y2 + 2 * x2  * y2 - 4 * self.l * y3 + y4 + 2 * self.j2 * z2 - 2 * self.k2 * z2 + 2 * self.l2 * z2 + 2 * x2 * z2 - 4 * self.l * y * z2 + 2 * y2 * z2 + z4) ** 0.5 ) / ((self.j4 - 2 * self.j2 * self.k2 + self.k4 + 2 * self.j2 * self.l2 - 2 * self.k2 * self.l2 + self.l4 + 2 * self.j2 * x2 - 2 * self.k2 * x2 + 2 * self.l2 * x2+ x4 - 4 * self.j2 * self.l * y + 4 * self.k2 * self.l * y - 4 * self.l3 * y - 4 * self.l * x2 * y + 2 * self.j2 * y2 - 2 * self.k2 * y2 + 6 * self.l2 * y2 + 2 * x2 * y2 - 4 * self.l * y3 + y4 + 2 * self.j2 * z2 - 2 * self.k2 * z2 + 2 * self.l2 * z2 + 2 * x2 * z2 - 4 * self.l * y * z2 + 2 * y2 * z2 + z4) ** 0.5))
         # b = math.atan2(argumentY,argumentX)
         # print(b)
