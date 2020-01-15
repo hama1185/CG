@@ -173,40 +173,48 @@ def myGround(height):
 def animation(fromList,toList):
     global mx,my,mz 
     if fromList[0] > toList[0]:
-        for i in range(toList[0] , fromList[0]):
+        for i in range(toList[0] , fromList[0] + 1):
             my = my - 1
-            glutPostRedisplay()
+            if my % 5 == 0:
+                glutPostRedisplay()
     elif fromList[0] < toList[0]:
-        for i in range(fromList[0], toList[0]):
+        for i in range(fromList[0], toList[0] + 1):
             my = my + 1
-            glutPostRedisplay()
+            if my % 5 == 0:
+                glutPostRedisplay()
     
     if fromList[1] > toList[1]:
-        for j in range(toList[1] , fromList[1]):
+        for j in range(toList[1] , fromList[1] + 1):
             mz = mz - 1
-            glutPostRedisplay()
+            if my % 5 == 0:
+                glutPostRedisplay()
     elif fromList[1] < toList[1]:
-        for j in range(fromList[1], toList[1]):
+        for j in range(fromList[1], toList[1] + 1):
             mz = mz + 1
-            glutPostRedisplay()
+            if my % 5 == 0:
+                glutPostRedisplay()
     
     if fromList[2] > toList[2]:
-        for k in range(toList[2] , fromList[2]):
+        for k in range(toList[2] , fromList[2] + 1):
             mx = mx - 1
-            glutPostRedisplay()
+            if my % 5 == 0:
+                glutPostRedisplay()
     elif fromList[2] < toList[2]:
-        for k in range(fromList[2], toList[2]):
+        for k in range(fromList[2], toList[2] + 1):
             mx = mx + 1
-            glutPostRedisplay()
+            if my % 5 == 0:
+                glutPostRedisplay()
 
 
 def rundisplay():
     global gx,gy,gz,dx,dy,dz,spaceFlag
+    print("rundisplay")
     if spaceFlag:
         ControlArm = controlArm(ARM_HALF_LENGTH,ARM_HALF_LENGTH,ARM_HALF_LENGTH)
         toList = ControlArm.solveArm(gx, gy, gz)
         fromList = np.array([dy, dz, dx],dtype=int)
         animation(fromList,toList)
+        print("rundisplay")
 
 def display():
     global mx,my,mz
@@ -317,6 +325,7 @@ def key(key, x, y):
     key = key.decode("utf-8")
     if key == " ":
         inputData()
+        rundisplay()
 
 
 def inputData():
