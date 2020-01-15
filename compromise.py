@@ -44,7 +44,7 @@ class controlArm():
                             dataSecondArm = b
                             dataThirdArm = c
 
-            ansList = np.array([dataFirstArm,dataSecondArm,dataThirdArm],dtype=float)
+            ansList = np.array([dataFirstArm,dataSecondArm,dataThirdArm],dtype=int)
             print(substractX)
             print(substractY)
             print(substractZ)
@@ -54,7 +54,7 @@ class controlArm():
             return ansList
         
         else:
-            angleList = np.array([dy, dz, dx],dtype=float)
+            angleList = np.array([dy, dz, dx],dtype=int)
             return angleList
     
 
@@ -77,7 +77,7 @@ BLUE = [0.2, 0.2, 0.8, 1.0]
 YELLOW = [0.8, 0.8, 0.2, 1.0]
 DIFFUSE_GROUND = [[0.6, 0.6, 0.6, 1.0], [0.3, 0.3, 0.3, 1.0]]
 RANGE_GROUND = range(-5, 5)
-# それぞれgがglobal pはpositionのp dはdelta
+# それぞれgがglobal pはpositionのp dはdelta mはmove 
 gx = 0.0
 gy = 0.0
 gz = 0.0
@@ -87,6 +87,9 @@ pz = 0.0
 dx = 0.0
 dy = 0.0
 dz = 0.0
+mx = 0.0
+my = 0.0
+mz = 0.0
 spaceFlag = False
 
 GROUND_LEVEL = -2.0
@@ -167,11 +170,46 @@ def myGround(height):
             glVertex3d(i+1, height, j)
     glEnd()
 
+def animation(fromList,toList):
+    global mx,my,mz 
+    if fromList[0] > toList[0]:
+        for i in range(toList[0] , fromList[0]):
+            my = my - 1
+            glutPostRedisplay()
+    elif fromList[0] < toList[0]:
+        for i in range(fromList[0], toList[0]):
+            my = my + 1
+            glutPostRedisplay()
+    
+    if fromList[1] > toList[1]:
+        for j in range(toList[1] , fromList[1]):
+            mz = mz - 1
+            glutPostRedisplay()
+    elif fromList[1] < toList[1]:
+        for j in range(fromList[1], toList[1]):
+            mz = mz + 1
+            glutPostRedisplay()
+    
+    if fromList[2] > toList[2]:
+        for k in range(toList[2] , fromList[2]):
+            mx = mx - 1
+            glutPostRedisplay()
+    elif fromList[2] < toList[2]:
+        for k in range(fromList[2], toList[2]):
+            mx = mx + 1
+            glutPostRedisplay()
+
+
+def rundisplay():
+    global gx,gy,gz,dx,dy,dz,spaceFlag
+    if spaceFlag:
+        ControlArm = controlArm(ARM_HALF_LENGTH,ARM_HALF_LENGTH,ARM_HALF_LENGTH)
+        toList = ControlArm.solveArm(gx, gy, gz)
+        fromList = np.array([dy, dz, dx],dtype=int)
+        animation(fromList,toList)
 
 def display():
-    ControlArm = controlArm(ARM_HALF_LENGTH,ARM_HALF_LENGTH,ARM_HALF_LENGTH)
-    global gx,gy,gz
-    arrayList = ControlArm.solveArm(gx, gy, gz)
+    global mx,my,mz
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT )
     glLoadIdentity()
     glLightfv(GL_LIGHT0, GL_POSITION, LIGHTPOS)
@@ -179,7 +217,7 @@ def display():
     glTranslated(0.0, 0.0, -10.0)
 
     myGround(GROUND_LEVEL)
-    glRotated(arrayList[0], 0.0, 1.0, 0.0)
+    glRotated(my, 0.0, 1.0, 0.0)
 
 # base
     glTranslated(0.0, GROUND_LEVEL+BASE_HALF_THICKNESS, 0.0)
@@ -197,7 +235,7 @@ def display():
     glPopMatrix()
 
 # 2nd arm
-    glRotated(arrayList[1], 0.0, 0.0, 1.0)
+    glRotated(mz, 0.0, 0.0, 1.0)
     glTranslated(0.0, ARM_HALF_LENGTH, 0.0)
     myBox(VERTEX_ARM)
 
@@ -209,7 +247,7 @@ def display():
     glPopMatrix()
 
 # 3nd arm
-    glRotated(arrayList[2], 1.0, 0.0, 0.0)
+    glRotated(mx, 1.0, 0.0, 0.0)
     glTranslated(0.0, ARM_HALF_LENGTH, 0.0)
     myBox(VERTEX_ARM)
 
@@ -247,18 +285,20 @@ def mouse(button, state, x, y):
 
 
 def motion(x, y):
-    global dz,dy,pz,py
+    global dz,dy,pz,py,mz,my
     dy = x - py
     dz = y - pz
     if dz > 80:
         dz = 80
     if dz < -80:
         dz = -80
+    mz = dz
+    my = dy
     glutPostRedisplay()
 
 
 def mouseWheel(button, dir, x, y):
-    global dx
+    global dx,mx
     if dir > 0:
         dx += 2
     elif dir < 0:
@@ -268,11 +308,8 @@ def mouseWheel(button, dir, x, y):
         dx = 80
     if dx < -80:
         dx = -80
+    mx = dx
     glutPostRedisplay()
-
-
-def animation(x,y):
-    glutPostRedisplay
 
 
 def key(key, x, y):
@@ -310,6 +347,7 @@ glutInit(sys.argv)
 glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH)
 glutCreateWindow(b"GLUT robot arm")
 glutDisplayFunc(display)
+rundisplay()
 glutMouseFunc(mouse)
 glutMotionFunc(motion)
 glutMouseWheelFunc(mouseWheel)
