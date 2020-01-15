@@ -187,12 +187,14 @@ def display():
 
     glFlush()
 
+
 def resize(w, h):
     glViewport(0, 0, w, h)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluPerspective(34.0, w/h, 1.0, 100.0)
     glMatrixMode(GL_MODELVIEW)
+
 
 def init():
     gray = 1.0

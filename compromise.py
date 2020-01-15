@@ -20,9 +20,9 @@ class controlArm():
         minsub = 100.0
         dataSecondArm = 0.0
         dataThirdArm = 0.0
-        for i in range(-180, 180):
+        for i in range(-80, 80):
             b = i
-            for j in range(-180, 180):
+            for j in range(-80, 80):
                 c = j
                 solveX = -self.j * math.cos(a) * math.sin(b) - self.k * math.sin(b+c) * math.cos(a)
                 solveY = self.l + self.j * math.cos(b) + self.k * math.cos(b+c)
@@ -78,7 +78,7 @@ spacesecondFlag = False
 GROUND_LEVEL = -2.0
 BASE_HALF_THICKNESS = 0.2
 ARM_SIZE = 0.3
-ARM_HALF_LENGTH = 1.0
+ARM_HALF_LENGTH = 1.2
 
 def vertex_box(x, y, z):
     vertex = [

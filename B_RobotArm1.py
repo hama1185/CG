@@ -197,7 +197,6 @@ def motion(x, y):
     global dz,dy,pz,py
     dy = x - py
     dz = y - pz
-    
     glutPostRedisplay()
 
 def mouseWheel(button, dir, x, y):
@@ -237,6 +236,7 @@ def inputData():
             gz = input("z :\n")
 
 inputData()
+#引数は細さ,長さ真ん中から中心に両側から生える,
 VERTEX_ARM = vertex_box(ARM_SIZE, ARM_HALF_LENGTH, ARM_SIZE)
 glutInit(sys.argv)
 glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH)
