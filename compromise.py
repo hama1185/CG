@@ -11,37 +11,52 @@ class controlArm():
         self.j = j
         self.k = k
     #mathmatica`s atan is (x,y),but python`s atan is (y,x)
-    def returnFirstArm(self,x ,y ,z):
-        
-        return math.degrees(math.atan2(z,-x))
 
     def solveArm(self, x, y, z):
-        a = self.returnFirstArm(x, y, z)
-        minsub = 100.0
-        dataSecondArm = 0.0
-        dataThirdArm = 0.0
-        for i in range(-80, 80):
-            b = i
-            for j in range(-80, 80):
-                c = j
-                solveX = -self.j * math.cos(a) * math.sin(b) - self.k * math.sin(b+c) * math.cos(a)
-                solveY = self.l + self.j * math.cos(b) + self.k * math.cos(b+c)
-                solveZ = self.j * math.sin(a) * math.sin(b) + self.k * math.sin(b+c) * math.sin(a)
+        global spaceFlag, dx, dy, dz
+        if spaceFlag:
+            spaceFlag = False
+            minsub = 100.0
+            dataFirstArm = 0.0
+            dataSecondArm = 0.0
+            dataThirdArm = 0.0
+            for n in range(-180, 180, 5):
+                a = n
+                for i in range(-80, 80):
+                    b = i
+                    for j in range(-80, 80):
+                        c = j
+                        radA = math.radians(a)
+                        radB = math.radians(b)
+                        radC = math.radians(c)
+                        solveX = -self.j * math.cos(radA) * math.sin(radB) - self.k * math.cos(radC) * math.sin(radB) * math.cos(radA) + self.k * math.sin(radA) * math.sin(radC)
+                        solveY = self.l + self.j * math.cos(radB) + self.k * math.cos(radB) * math.cos(radC)
+                        solveZ = self.j * math.sin(radA) * math.sin(radB) + self.k * math.cos(radC) * math.sin(radB) * math.sin(radA) + self.k * math.cos(radA) * math.sin(radC)
 
-                substractX = abs(x - solveX)
-                substractY = abs(y - solveY)
-                substractZ = abs(z - solveZ)
+                        substractX = abs(x - solveX)
+                        substractY = abs(y - solveY)
+                        substractZ = abs(z - solveZ)
 
-                sumSub = substractX + substractY + substractZ
-                if sumSub < minsub:
-                    minsub = sumSub
-                    dataSecondArm = b
-                    dataThirdArm = c
+                        sumSub = substractX + substractY + substractZ
+                        if sumSub < minsub:
+                            minsub = sumSub
+                            dataFirstArm = a
+                            dataSecondArm = b
+                            dataThirdArm = c
 
-        ansList = np.array([dataSecondArm,dataThirdArm],dtype=float)
-        print(dataSecondArm)
-        print(dataThirdArm)
-        return ansList
+            ansList = np.array([dataFirstArm,dataSecondArm,dataThirdArm],dtype=float)
+            print(substractX)
+            print(substractY)
+            print(substractZ)
+            print(dataFirstArm)
+            print(dataSecondArm)
+            print(dataThirdArm)
+            return ansList
+        
+        else:
+            angleList = np.array([dy, dz, dx],dtype=float)
+            return angleList
+    
 
 class Face:
     def __init__(self, i_vertex, normal):
@@ -72,13 +87,13 @@ pz = 0.0
 dx = 0.0
 dy = 0.0
 dz = 0.0
-spacefirstFlag = False
-spacesecondFlag = False
+spaceFlag = False
 
 GROUND_LEVEL = -2.0
 BASE_HALF_THICKNESS = 0.2
 ARM_SIZE = 0.3
 ARM_HALF_LENGTH = 1.2
+
 
 def vertex_box(x, y, z):
     vertex = [
@@ -91,7 +106,8 @@ def vertex_box(x, y, z):
         [ x,  y,  z],   # G
         [-x,  y,  z]]   # H
     return vertex
-    
+
+
 def myBox(vertex):
     glMaterialfv(GL_FRONT, GL_DIFFUSE, RED)
     
@@ -101,6 +117,7 @@ def myBox(vertex):
         for i in face1.i_vertex:
             glVertex3dv(vertex[i])
     glEnd()    
+
 
 def myCylinder(radius, height, sides):
     step = 2*math.pi/sides
@@ -150,9 +167,11 @@ def myGround(height):
             glVertex3d(i+1, height, j)
     glEnd()
 
+
 def display():
     ControlArm = controlArm(ARM_HALF_LENGTH,ARM_HALF_LENGTH,ARM_HALF_LENGTH)
     global gx,gy,gz
+    arrayList = ControlArm.solveArm(gx, gy, gz)
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT )
     glLoadIdentity()
     glLightfv(GL_LIGHT0, GL_POSITION, LIGHTPOS)
@@ -160,7 +179,7 @@ def display():
     glTranslated(0.0, 0.0, -10.0)
 
     myGround(GROUND_LEVEL)
-    glRotated(ControlArm.returnFirstArm(gx, gy, gz), 0.0, 1.0, 0.0)
+    glRotated(arrayList[0], 0.0, 1.0, 0.0)
 
 # base
     glTranslated(0.0, GROUND_LEVEL+BASE_HALF_THICKNESS, 0.0)
@@ -178,19 +197,19 @@ def display():
     glPopMatrix()
 
 # 2nd arm
-    glRotated(ControlArm.solveArm(gx ,gy ,gz)[0], 0.0, 0.0, 1.0)
+    glRotated(arrayList[1], 0.0, 0.0, 1.0)
     glTranslated(0.0, ARM_HALF_LENGTH, 0.0)
     myBox(VERTEX_ARM)
 
 # 2nd joint
     glTranslated(0.0, ARM_HALF_LENGTH, 0.0)
     glPushMatrix()
-    glRotated(90.0, 1.0, 0.0, 0.0)
+    glRotated(90.0, 0.0, 0.0, 1.0)
     myCylinder(0.4, 0.4, 16)
     glPopMatrix()
 
 # 3nd arm
-    glRotated(ControlArm.solveArm(gx, gy, gz)[1], 0.0, 0.0, 1.0)
+    glRotated(arrayList[2], 1.0, 0.0, 0.0)
     glTranslated(0.0, ARM_HALF_LENGTH, 0.0)
     myBox(VERTEX_ARM)
 
@@ -201,12 +220,14 @@ def display():
 
     glFlush()
 
+
 def resize(w, h):
     glViewport(0, 0, w, h)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluPerspective(34.0, w/h, 1.0, 100.0)
     glMatrixMode(GL_MODELVIEW)
+
 
 def init():
     gray = 1.0
@@ -224,12 +245,17 @@ def mouse(button, state, x, y):
             py = x
             pz = y
 
+
 def motion(x, y):
     global dz,dy,pz,py
     dy = x - py
     dz = y - pz
-    
+    if dz > 80:
+        dz = 80
+    if dz < -80:
+        dz = -80
     glutPostRedisplay()
+
 
 def mouseWheel(button, dir, x, y):
     global dx
@@ -237,8 +263,17 @@ def mouseWheel(button, dir, x, y):
         dx += 2
     elif dir < 0:
         dx -= 2
-    
+
+    if dx > 80:
+        dx = 80
+    if dx < -80:
+        dx = -80
     glutPostRedisplay()
+
+
+def animation(x,y):
+    glutPostRedisplay
+
 
 def key(key, x, y):
     global gx,gy,gz
@@ -246,10 +281,10 @@ def key(key, x, y):
     if key == " ":
         inputData()
 
+
 def inputData():
-    global gx,gy,gz,spacefirstFlag,spacesecondFlag
-    spacefirstFlag = True
-    spacesecondFlag = True 
+    global gx,gy,gz,spaceFlag
+    spaceFlag = True 
     gx = input("x :\n")
     while type(gx) != (float or int):
         try:
