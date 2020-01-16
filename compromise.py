@@ -4,6 +4,8 @@ from OpenGL.GLUT import *
 import sys
 import math
 import numpy as np
+import time
+import threading
 
 class controlArm():
     def __init__(self, l, j, k):
@@ -91,6 +93,7 @@ mx = 0.0
 my = 0.0
 mz = 0.0
 spaceFlag = False
+isFinish = True
 
 GROUND_LEVEL = -2.0
 BASE_HALF_THICKNESS = 0.2
@@ -171,50 +174,67 @@ def myGround(height):
     glEnd()
 
 def animation(fromList,toList):
-    global mx,my,mz 
+    global mx,my,mz,isFinish
+    refresh()
+    total = 0
+    print("animation start")
     if fromList[0] > toList[0]:
         for i in range(toList[0] , fromList[0] + 1):
             my = my - 1
-            if my % 5 == 0:
-                glutPostRedisplay()
+            time.sleep(0.5)
+
     elif fromList[0] < toList[0]:
         for i in range(fromList[0], toList[0] + 1):
             my = my + 1
-            if my % 5 == 0:
-                glutPostRedisplay()
-    
+            time.sleep(0.5)
+
     if fromList[1] > toList[1]:
         for j in range(toList[1] , fromList[1] + 1):
             mz = mz - 1
-            if my % 5 == 0:
-                glutPostRedisplay()
+            time.sleep(0.5)
+
     elif fromList[1] < toList[1]:
         for j in range(fromList[1], toList[1] + 1):
             mz = mz + 1
-            if my % 5 == 0:
-                glutPostRedisplay()
+            time.sleep(0.5)
     
     if fromList[2] > toList[2]:
         for k in range(toList[2] , fromList[2] + 1):
             mx = mx - 1
-            if my % 5 == 0:
-                glutPostRedisplay()
+            time.sleep(0.5)
+
     elif fromList[2] < toList[2]:
         for k in range(fromList[2], toList[2] + 1):
             mx = mx + 1
-            if my % 5 == 0:
-                glutPostRedisplay()
+            time.sleep(0.5)
+
+    print("animation finish")
+    isFinish = False
+
+
+
+def refresh():
+    glutPostRedisplay()
+
+
+def loopRefresh():
+    global isFinish
+    while isFinish:
+        glutPostRedisplay()
+        time.sleep(0.5)
 
 
 def rundisplay():
     global gx,gy,gz,dx,dy,dz,spaceFlag
-    print("rundisplay")
     if spaceFlag:
         ControlArm = controlArm(ARM_HALF_LENGTH,ARM_HALF_LENGTH,ARM_HALF_LENGTH)
         toList = ControlArm.solveArm(gx, gy, gz)
         fromList = np.array([dy, dz, dx],dtype=int)
-        animation(fromList,toList)
-        print("rundisplay")
+        threadFront = threading.Thread(target=loopRefresh)
+        threadBack = threading.Thread(target=animation,args=(fromList, toList,))
+        
+        threadFront.start()
+        threadBack.start()
 
 def display():
     global mx,my,mz
@@ -302,7 +322,7 @@ def motion(x, y):
         dz = -80
     mz = dz
     my = dy
-    glutPostRedisplay()
+    refresh()
 
 
 def mouseWheel(button, dir, x, y):
@@ -317,7 +337,7 @@ def mouseWheel(button, dir, x, y):
     if dx < -80:
         dx = -80
     mx = dx
-    glutPostRedisplay()
+    refresh()
 
 
 def key(key, x, y):
