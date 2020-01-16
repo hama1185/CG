@@ -181,32 +181,32 @@ def animation(fromList,toList):
     if fromList[0] > toList[0]:
         for i in range(toList[0] , fromList[0] + 1):
             my = my - 1
-            time.sleep(0.5)
+            time.sleep(0.01)
 
     elif fromList[0] < toList[0]:
         for i in range(fromList[0], toList[0] + 1):
             my = my + 1
-            time.sleep(0.5)
+            time.sleep(0.01)
 
     if fromList[1] > toList[1]:
         for j in range(toList[1] , fromList[1] + 1):
             mz = mz - 1
-            time.sleep(0.5)
+            time.sleep(0.01)
 
     elif fromList[1] < toList[1]:
         for j in range(fromList[1], toList[1] + 1):
             mz = mz + 1
-            time.sleep(0.5)
+            time.sleep(0.01)
     
     if fromList[2] > toList[2]:
         for k in range(toList[2] , fromList[2] + 1):
             mx = mx - 1
-            time.sleep(0.5)
+            time.sleep(0.01)
 
     elif fromList[2] < toList[2]:
         for k in range(fromList[2], toList[2] + 1):
             mx = mx + 1
-            time.sleep(0.5)
+            time.sleep(0.01)
 
     print("animation finish")
     isFinish = False
@@ -220,8 +220,8 @@ def refresh():
 def loopRefresh():
     global isFinish
     while isFinish:
-        glutPostRedisplay()
-        time.sleep(0.5)
+        time.sleep(0.05)
+        refresh()
 
 
 def rundisplay():
