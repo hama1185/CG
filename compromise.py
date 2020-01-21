@@ -184,6 +184,7 @@ def myGround(height):
             glVertex3d(i+1, height, j)
     glEnd()
 
+
 def animation(fromList,toList):
     global mx,my,mz,isFinish
     refresh()
@@ -223,7 +224,6 @@ def animation(fromList,toList):
     isFinish = True
 
 
-
 def refresh():
     glutPostRedisplay()
 
@@ -246,6 +246,7 @@ def rundisplay():
         
         threadFront.start()
         threadBack.start()
+
 
 def display():
     global mx,my,mz
