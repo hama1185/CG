@@ -12,6 +12,7 @@ class controlArm():
         self.l = l
         self.j = j
         self.k = k
+
     #mathmatica`s atan is (x,y),but python`s atan is (y,x)
 
     def solveArm(self, x, y, z):
@@ -79,21 +80,31 @@ BLUE = [0.2, 0.2, 0.8, 1.0]
 YELLOW = [0.8, 0.8, 0.2, 1.0]
 DIFFUSE_GROUND = [[0.6, 0.6, 0.6, 1.0], [0.3, 0.3, 0.3, 1.0]]
 RANGE_GROUND = range(-5, 5)
-# それぞれgがglobal pはpositionのp dはdelta mはmove 
+# g is global
+ 
 gx = 0.0
 gy = 0.0
 gz = 0.0
+
+# p is position
+
 px = 0.0
 py = 0.0
 pz = 0.0
+
+# d is delta
+
 dx = 0.0
 dy = 0.0
 dz = 0.0
+
+# m is mind
+
 mx = 0.0
 my = 0.0
 mz = 0.0
 spaceFlag = False
-isFinish = True
+isFinish = False
 
 GROUND_LEVEL = -2.0
 BASE_HALF_THICKNESS = 0.2
@@ -209,7 +220,7 @@ def animation(fromList,toList):
             time.sleep(0.01)
 
     print("animation finish")
-    isFinish = False
+    isFinish = True
 
 
 
@@ -219,7 +230,7 @@ def refresh():
 
 def loopRefresh():
     global isFinish
-    while isFinish:
+    while not isFinish:
         time.sleep(0.05)
         refresh()
 
@@ -229,7 +240,7 @@ def rundisplay():
     if spaceFlag:
         ControlArm = controlArm(ARM_HALF_LENGTH,ARM_HALF_LENGTH,ARM_HALF_LENGTH)
         toList = ControlArm.solveArm(gx, gy, gz)
-        fromList = np.array([dy, dz, dx],dtype=int)
+        fromList = np.array([my, mz, mx],dtype=int)
         threadFront = threading.Thread(target=loopRefresh)
         threadBack = threading.Thread(target=animation,args=(fromList, toList,))
         
@@ -336,6 +347,7 @@ def mouseWheel(button, dir, x, y):
         dx = 80
     if dx < -80:
         dx = -80
+    
     mx = dx
     refresh()
 
@@ -370,6 +382,7 @@ def inputData():
         except ValueError:
             gz = input("z :\n")
 
+
 inputData()
 VERTEX_ARM = vertex_box(ARM_SIZE, ARM_HALF_LENGTH, ARM_SIZE)
 glutInit(sys.argv)
@@ -381,5 +394,6 @@ glutMotionFunc(motion)
 glutMouseWheelFunc(mouseWheel)
 glutKeyboardUpFunc(key)
 glutReshapeFunc(resize)
+glutIdleFunc(refresh)
 init()
 glutMainLoop()
